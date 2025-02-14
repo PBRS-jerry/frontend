@@ -15,12 +15,12 @@
       body: JSON.stringify({ email, password }),
     });
     const data = await response.json();
+    let expiresIn = 3600;
 
     if (response.ok) {
       // isLoggedIn.set(true); // Set logged in state
-
-      storeTokens(data.accessToken, data.refreshToken, data.expiresIn); // Store tokens in local storage
-      localStorage.setItem('userId', data.userId);
+      storeTokens(data.access_token, data.refresh_token, expiresIn); // Store tokens in local storage
+      localStorage.setItem('userId', data.user_id);
       alert("Login successful!");
     } else {
       alert(data.message || "Login failed");

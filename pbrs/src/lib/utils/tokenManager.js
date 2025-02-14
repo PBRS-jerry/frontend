@@ -51,9 +51,10 @@ export async function refreshAccessToken() {
     }
 
     const data = await response.json();
-    storeTokens(data.accessToken, data.refreshToken, data.expiresIn); // Store the new access and refresh tokens
+    let expiresIn = 3600; // Default expiration time of 1 hour
+    storeTokens(data.access_token, refreshToken, expiresIn); // Store the new access and refresh tokens
 
-    return data.accessToken;
+    return data.access_token;
   } catch (error) {
     console.error("Error refreshing access token:", error);
     clearTokens(); // Clear the tokens if refresh fails

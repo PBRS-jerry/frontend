@@ -17,11 +17,12 @@
     localStorage.removeItem('userId');
     isLoggedIn.set(false);
     alert("You have been logged out");
+    navigate('login');
   }
 </script>
 
 <nav>
-  <button on:click={() => navigate('booklist')}>Profile</button>
+  <button on:click={() => navigate('booklist')}>Booklist</button>
   {#if loggedIn}
     <button on:click={() => navigate('profile')}>Profile</button>
     <button on:click={handleLogout}>Logout</button>

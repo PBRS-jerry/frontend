@@ -93,7 +93,7 @@
   <h3>Update Profile</h3>
   <form on:submit|preventDefault={saveProfile}>
     <input type="text" bind:value={newUsername} placeholder="Username" required />
-    <input type="text" bind:value={userProfile.password} placeholder="Password" required />
+    <input type="text" bind:value={newPassword} placeholder="Password" required />
     <button type="submit">Save</button>
   </form>
 
