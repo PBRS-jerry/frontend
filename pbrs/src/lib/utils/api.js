@@ -1,7 +1,7 @@
 import { getAccessToken, refreshAccessToken } from './tokenManager.js';
 
 export async function fetchWithAuth(url, options = {}) {
-  let accessToken = getAccessToken();
+  let accessToken = await getAccessToken();
 
   if (!accessToken) {
     throw new Error('No valid access token found');
@@ -16,7 +16,10 @@ export async function fetchWithAuth(url, options = {}) {
   let response = await fetch(url, options);
 
   // Check if the response indicates that the access token is expired or invalid
-  if (response.status === 401) {
+  const clonedResponse = response.clone();
+  const responseBody = await clonedResponse.json();
+   
+  if (response.status === 401 && responseBody.msg === 'The access token has expired') {
     // Try to refresh the access token
     accessToken = await refreshAccessToken();
 
@@ -24,6 +27,7 @@ export async function fetchWithAuth(url, options = {}) {
       // Retry the original request with the new access token
       options.headers['Authorization'] = `Bearer ${accessToken}`;
       response = await fetch(url, options);
+      alert("Access token refreshed");
     }
   }
 

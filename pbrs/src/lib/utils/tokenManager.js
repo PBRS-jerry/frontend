@@ -1,7 +1,7 @@
 import { isLoggedIn } from '../components/authStore.js';
 
 export function storeTokens(accessToken, refreshToken, expiresIn) {
-  const expirationTime = Date.now() + expiresIn * 1000; // Set the expiration time for the access token
+  const expirationTime = Date.now() + expiresIn; // Set the expiration time for the access token
 
   localStorage.setItem('accessToken', accessToken);
   localStorage.setItem('refreshToken', refreshToken);
@@ -17,7 +17,8 @@ export function getAccessToken() {
   if (accessToken && Number(expirationTime) > Date.now()) {
     return accessToken;
   } else if (accessToken) {
-    refreshAccessToken(); // Try to refresh the access token if it's expired
+    let newAccessToken = refreshAccessToken(); // Try to refresh the access token if it's expired
+    return newAccessToken;
   }
   return null; // Access token is either missing or expired
 }
@@ -38,7 +39,7 @@ export async function refreshAccessToken() {
   }
 
   try {
-    const response = await fetch('http://localhost:9005/service/public/refresh', {
+    const response = await fetch('/api/service/public/refresh', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${refreshToken}`, // Send the refresh token to get a new access token
@@ -53,7 +54,6 @@ export async function refreshAccessToken() {
     const data = await response.json();
     let expiresIn = 3600; // Default expiration time of 1 hour
     storeTokens(data.access_token, refreshToken, expiresIn); // Store the new access and refresh tokens
-
     return data.access_token;
   } catch (error) {
     console.error("Error refreshing access token:", error);
