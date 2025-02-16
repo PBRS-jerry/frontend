@@ -1,5 +1,6 @@
 <script>
   import { onMount } from 'svelte';
+  import { bookServiceP, bookServiceU } from '../utils/urlManager';
 
   let token = localStorage.getItem('accessToken');
   let userRole = '';
@@ -13,7 +14,12 @@
   let searchQuery = '';
 
   async function fetchBooks() {
-    const res = await fetch(`http://localhost:9005/books?search=${searchQuery}`);
+    if (!searchQuery) {
+      const res = await fetch(bookServiceU + '/books');
+      books = await res.json();
+      return;
+    }
+    const res = await fetch(bookServiceU + '/books?search=${searchQuery}');
     books = await res.json();
   }
 
@@ -25,7 +31,13 @@
 
 <ul>
   {#each books as book}
-    <li><a href={`/books/${book.id}`}>{book.title}</a></li>
+    <li>
+      <a href={`/books/${book.id}`}>{book.title}</a>
+      <span>{book.author}</span>
+      <span>{book.genre}</span>
+      <span>{book.year}</span>
+      <span>{book.tags}</span>
+    </li>
   {/each}
 </ul>
 
