@@ -2,6 +2,7 @@
   import { storeTokens } from "../utils/tokenManager";
   import { isLoggedIn } from "./authStore";
   import { login, gLogin } from "../utils/urlManager";
+  export let navigate;
 
   let email = '';
   let password = '';
@@ -22,6 +23,7 @@
       storeTokens(data.access_token, data.refresh_token, expiresIn); // Store tokens in local storage
       localStorage.setItem('userId', data.user_id);
       alert("Login successful!");
+      navigate('booklist');
     } else {
       alert(data.message || "Login failed");
     }

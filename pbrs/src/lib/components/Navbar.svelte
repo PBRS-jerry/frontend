@@ -17,7 +17,7 @@
     localStorage.removeItem('userId');
     isLoggedIn.set(false);
     alert("You have been logged out");
-    navigate('login');
+    navigate('booklist');
   }
 </script>
 

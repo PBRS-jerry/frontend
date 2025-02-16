@@ -4,6 +4,7 @@
   import { fetchWithAuth } from '../utils/api';
   import { profile, modifyUser, signOut } from '../utils/urlManager';
   import { storeTokens, refreshAccessToken, clearTokens } from "../utils/tokenManager";
+  export let navigate;
 
   let loggedIn = false;
   let userProfile = {};
@@ -75,6 +76,7 @@
           isLoggedIn.set(false);
           userProfile = {};
           alert("Profile deleted successfully!");
+          navigate('login');
         }else{
           alert(data.message || "Failed to delete profile");
         }
