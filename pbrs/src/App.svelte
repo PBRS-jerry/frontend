@@ -10,7 +10,7 @@
   import { isLoggedIn } from "./lib/components/authStore";
   import { getAccessToken } from "./lib/utils/tokenManager";
 
-  let currentPage = 'login'; // Default page
+  let currentPage = 'booklist'; // Default page
 
   onMount(() => {
     const token = getAccessToken();
@@ -29,11 +29,11 @@
 <Navbar {navigate} />
 
 {#if currentPage === 'login'}
-  <Login />
+  <Login {navigate}/>
 {:else if currentPage === 'register'}
   <Register />
 {:else if currentPage === 'profile'}
-  <Profile />
+  <Profile {navigate}/>
 {:else if currentPage === 'booklist'}
   <BookList />
 {/if}
