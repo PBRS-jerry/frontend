@@ -1,8 +1,12 @@
 <script>
   import { onMount } from 'svelte';
-  export let params;
+  export let id;
+  import { bookServiceP, bookServiceU } from '../utils/urlManager';
+
   let book = {};
   let reviews = [];
+  let loading = true;
+  let error = null;
 
   let token = localStorage.getItem('accessToken');
   let userRole = '';
@@ -13,16 +17,36 @@
   }
 
   async function fetchBook() {
-    const res = await fetch(`http://localhost:3000/books/${params.id}`);
-    book = await res.json();
-    reviews = book.reviews;
+    try{
+      const res = await fetch(bookServiceU + `/${id}`);
+      book = await res.json();
+      // reviews = book.reviews;
+    } catch (err) {
+      error = err.message;
+    } finally {
+      loading = false;
+    }
   }
 
   onMount(fetchBook);
 </script>
 
-<h2>{book.title}</h2>
-<p>{book.description}</p>
+{#if loading}
+  <div>Loading...</div>
+{:else if error}
+  <div class="error">{error}</div>
+{:else if book}
+  <div class="book-detail">
+    <h1>{book.title}</h1>
+    <div class="info">
+      <p><strong>Author:</strong> {book.author}</p>
+      <p><strong>Genre:</strong> {book.genre}</p>
+      <p><strong>Year:</strong> {book.year}</p>
+      <p><strong>Tags:</strong> {book.tags}</p>
+    </div>
+    <Link to="/books">Back to Books</Link>
+  </div>
+{/if}
 
 {#if userRole === 'ADMIN'}
   <a href="/delete-book/{book.id}">Delete Book</a>
@@ -34,3 +58,20 @@
       <li>{review.content} - {review.user}</li>
   {/each}
 </ul>
+
+<style>
+  .book-detail {
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .info {
+    margin: 20px 0;
+  }
+
+  .error {
+    color: red;
+    padding: 20px;
+  }
+</style>

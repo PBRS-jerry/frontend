@@ -1,5 +1,6 @@
 <script>
   import { onMount } from 'svelte';
+  import { Link } from "svelte-routing";
   import { bookServiceP, bookServiceU } from '../utils/urlManager';
 
   let token = localStorage.getItem('accessToken');
@@ -31,8 +32,8 @@
 
 <ul>
   {#each books as book}
-    <li>
-      <a href={`/books/${book.id}`}>{book.title}</a>
+    <li class="book-item">
+      <Link to={`/books/${book.id}`}>{book.title}</Link>
       <span>{book.author}</span>
       <span>{book.genre}</span>
       <span>{book.year}</span>
@@ -44,3 +45,16 @@
 {#if userRole === 'ADMIN'}
   <a href="/add-book">Add Book</a>
 {/if}
+
+<style>
+  .book-item {
+    margin: 10px 0;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+  }
+  
+  span {
+    margin-left: 10px;
+    color: #666;
+  }
+</style>
