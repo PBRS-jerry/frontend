@@ -1,7 +1,14 @@
 <script>
   import { onMount } from 'svelte';
+  import { isLoggedIn } from "./authStore";
   import { Link } from "svelte-routing";
   import { bookServiceP, bookServiceU } from '../utils/urlManager';
+
+  let loggedIn = false;
+
+  isLoggedIn.subscribe(value => {
+    loggedIn = value;
+  });
 
   let token = localStorage.getItem('accessToken');
   let userRole = '';
@@ -16,11 +23,11 @@
 
   async function fetchBooks() {
     if (!searchQuery) {
-      const res = await fetch(bookServiceU + '/books');
+      const res = await fetch(`${bookServiceU}/books`);
       books = await res.json();
       return;
     }
-    const res = await fetch(bookServiceU + '/books?search=${searchQuery}');
+    const res = await fetch(`${bookServiceU}/books?search=${searchQuery}`);
     books = await res.json();
   }
 
@@ -33,7 +40,7 @@
 <ul>
   {#each books as book}
     <li class="book-item">
-      <Link to={`/books/${book.id}`}>{book.title}</Link>
+      <Link to={`/book/${book.id}`}>{book.title}</Link>
       <span>{book.author}</span>
       <span>{book.genre}</span>
       <span>{book.year}</span>
@@ -43,7 +50,7 @@
 </ul>
 
 {#if userRole === 'ADMIN'}
-  <a href="/add-book">Add Book</a>
+  <!-- <a href="/add-book">Add Book</a> -->
 {/if}
 
 <style>

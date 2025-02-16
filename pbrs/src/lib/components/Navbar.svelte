@@ -1,34 +1,38 @@
 <script>
-  export let navigate;
   import { onMount } from "svelte";
   import { isLoggedIn } from "./authStore";
   import { clearTokens } from "../utils/tokenManager";
+  import { Link } from "svelte-routing";
+  import { navigate } from "svelte-routing";
 
   let loggedIn = false;
 
-  // Subscribe to the isLoggenIn store
+  // Subscribe to the isLoggedIn store
   isLoggedIn.subscribe(value => {
     loggedIn = value;
   });
 
   function handleLogout() {
-    //Clear the token and set loggedIn to false
+    // Clear the token and set loggedIn to false
     clearTokens();
     localStorage.removeItem('userId');
     isLoggedIn.set(false);
     alert("You have been logged out");
-    navigate('booklist');
+    navigate('/');
   }
 </script>
 
 <nav>
-  <button on:click={() => navigate('booklist')}>Booklist</button>
   {#if loggedIn}
-    <button on:click={() => navigate('profile')}>Profile</button>
+  <div class="link-wrapper">
+    <button><Link class="link" to="/books">Books</Link></button>
+    <button><Link class="link" to="/profile">Profile</Link></button>
     <button on:click={handleLogout}>Logout</button>
+  </div>
   {:else}
-    <button on:click={() => navigate('login')}>Login</button>
-    <button on:click={() => navigate('register')}>Register</button>
+    <button><Link class="link" to="/books">Books</Link></button>
+    <button><Link class="link" to="/login">Login</Link></button>
+    <button><Link class="link" to="/register">Register</Link></button>
   {/if}
 </nav>
 
@@ -40,5 +44,9 @@
   }
   button {
     margin-right: 1rem;
+  }
+  .link-wrapper > button > :global(a){
+    text-decoration: none;
+    color: #fff;
   }
 </style>

@@ -1,12 +1,20 @@
 <script>
   import { onMount } from 'svelte';
+  import { isLoggedIn } from "./authStore";
   export let id;
   import { bookServiceP, bookServiceU } from '../utils/urlManager';
+  import { Link } from "svelte-routing";
 
   let book = {};
   let reviews = [];
   let loading = true;
   let error = null;
+
+  let loggedIn = false;
+
+  isLoggedIn.subscribe(value => {
+    loggedIn = value;
+  });
 
   let token = localStorage.getItem('accessToken');
   let userRole = '';
@@ -49,15 +57,15 @@
 {/if}
 
 {#if userRole === 'ADMIN'}
-  <a href="/delete-book/{book.id}">Delete Book</a>
+  <!-- <a href="/delete-book/{book.id}">Delete Book</a> -->
 {/if}
 
 <h3>Reviews:</h3>
-<ul>
+<!-- <ul>
   {#each reviews as review}
       <li>{review.content} - {review.user}</li>
   {/each}
-</ul>
+</ul> -->
 
 <style>
   .book-detail {

@@ -14,37 +14,28 @@
 
   export let url = "";
 
-  let currentPage = 'booklist'; // Default page
-
   onMount(() => {
     const token = getAccessToken();
     if(token) {
       isLoggedIn.set(true);
-    }else{
+    } else {
       isLoggedIn.set(false);
     }
   });
-
-  function navigate(page) {
-    currentPage = page;
-  }
 </script>
 
-<Navbar {navigate} />
-
-{#if currentPage === 'login'}
-  <Login {navigate}/>
-{:else if currentPage === 'register'}
-  <Register />
-{:else if currentPage === 'profile'}
-  <Profile {navigate}/>
-{:else if currentPage === 'booklist'}
-  <BookList />
-  <Router>
+<Router {url}>
+  <Navbar />
+  <main>
+    <Route path="/login" component={Login} />
+    <Route path="/register" component={Register} />
+    <Route path="/profile" component={Profile} />
     <Route path="/books" component={BookList} />
-    <Route path="/books/:id" component={BookDetail} />
-  </Router>
-{/if}
+    <Route path="/book/:id" component={BookDetail} />
+    <Route path="/" component={BookList} />
+    <Route path="/*" component={BookList} /> <!-- Fallback route -->
+  </main>
+</Router>
 
 <!-- 
 <style>

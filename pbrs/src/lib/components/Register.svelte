@@ -2,6 +2,7 @@
   import { isLoggedIn } from "./authStore";
   import { storeTokens } from "../utils/tokenManager";
   import { register, gLogin } from "../utils/urlManager";
+  import { navigate } from "svelte-routing";
 
   let username = '';
   let email = '';
@@ -20,6 +21,7 @@
     if (response.ok) {
       storeTokens(data.accessToken, data.refreshToken, data.expiresIn); // Store tokens in local storage
       alert("Registration successful! You are now logged in.");
+      navigate('/');
     } else {
       alert(data.message || "Registration failed");
     }

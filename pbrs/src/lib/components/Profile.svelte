@@ -4,7 +4,7 @@
   import { fetchWithAuth } from '../utils/api';
   import { profile, modifyUser, signOut } from '../utils/urlManager';
   import { storeTokens, refreshAccessToken, clearTokens } from "../utils/tokenManager";
-  export let navigate;
+  import { navigate } from "svelte-routing";
 
   let loggedIn = false;
   let userProfile = {};
@@ -31,58 +31,50 @@
     }
   });
 
-  function saveProfile() {
-    // Save user profile
-    async() => {
-      try {
-        const response = await fetchWithAuth(modifyUser + '/' + userId, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(
-            {
-              username: newUsername,
-              password: newPassword,
-            }
-          ),
-        });
-        const data = await response.json();
+  async function saveProfile() {
+    try {
+      const response = await fetchWithAuth(modifyUser + '/' + userId, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: newUsername,
+          password: newPassword,
+        }),
+      });
+      const data = await response.json();
 
-        if (response.ok){
-          refreshAccessToken();
-          message = "Profile updated successfully!";
-        }else{
-          message = data.message || "Failed to update profile";
-        }
-      } catch (error) {
-        console.error(error);
+      if (response.ok){
+        refreshAccessToken();
+        message = "Profile updated successfully!";
+      }else{
+        message = data.message || "Failed to update profile";
       }
+    } catch (error) {
+      console.error(error);
     }
   }
 
-  function deleteProfile() {
-    // Delete user profile
-    async() => {
-      try {
-        const response = await fetchWithAuth(signOut + '/' + userId, {
-          method: 'DELETE',
-        });
-        const data = await response.json();
+  async function deleteProfile() {
+    try {
+      const response = await fetchWithAuth(signOut + '/' + userId, {
+        method: 'DELETE',
+      });
+      const data = await response.json();
 
-        if (response.ok){
-          clearTokens();
-          localStorage.removeItem('userId');
-          isLoggedIn.set(false);
-          userProfile = {};
-          alert("Profile deleted successfully!");
-          navigate('login');
-        }else{
-          alert(data.message || "Failed to delete profile");
-        }
-      } catch (error) {
-        console.error(error);
+      if (response.ok){
+        clearTokens();
+        localStorage.removeItem('userId');
+        isLoggedIn.set(false);
+        userProfile = {};
+        alert("Profile deleted successfully!");
+        navigate('/');
+      }else{
+        alert(data.message || "Failed to delete profile");
       }
+    } catch (error) {
+      console.error(error);
     }
   }
 </script>
